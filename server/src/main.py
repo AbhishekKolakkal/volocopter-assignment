@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
+from fastapi import Body
 from pydantic import BaseModel, Field
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
@@ -34,6 +35,7 @@ class Mission(BaseModel):
     state: str
 
 
+
 @app.get("/missions")
 async def get_missions(db: Session = Depends(get_db)):
     return db.query(models.Missions).all()
@@ -51,7 +53,7 @@ async def create_mission(mission: Mission, db: Session = Depends(get_db)):
     return {"message": "Mission Created"}
 
 @app.put("/missions/{mission_id}")
-async def move_mission(mission_id: int, mission_state: str, db: Session = Depends(get_db)):
+async def move_mission(mission_id: int, new_state: str = Body(...), db: Session = Depends(get_db)):
     mission_model = db.query(models.Missions).filter(models.Missions.id == mission_id).first()
     if mission_model == None:
         raise HTTPException(
@@ -59,7 +61,7 @@ async def move_mission(mission_id: int, mission_state: str, db: Session = Depend
             detail=f"ID {mission_id} : Does not Exist"
         )
     
-    mission_model.state = mission_state
+    mission_model.state = new_state
     db.add(mission_model)
     db.commit()
     

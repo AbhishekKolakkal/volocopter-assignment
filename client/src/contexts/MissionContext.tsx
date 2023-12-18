@@ -61,7 +61,7 @@ export const MissionProvider: React.FC = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ new_state: newState }),
+        body: JSON.stringify(newState),
       });
       const data = await response.json();
       // Handle success or error
