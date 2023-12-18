@@ -1,6 +1,8 @@
 // src/contexts/MissionContext.tsx
 import React, { createContext, useState, useContext } from 'react';
 
+export const apiBaseUrl = 'http://localhost:9000';
+
 interface Mission {
   id: string;
   name: string;
@@ -12,6 +14,7 @@ interface MissionContextProps {
   createMission: (name: string, state: string) => void;
   moveMission: (id: string, newState: 'pre-flight' | 'in-flight' | 'post-flight') => void;
   deleteMission: (id: string) => void;
+  getMissions: () => Promise<void>; 
 }
 
 export const MissionContext = createContext<MissionContextProps | undefined>(undefined);
@@ -19,29 +22,68 @@ export const MissionContext = createContext<MissionContextProps | undefined>(und
 export const MissionProvider: React.FC = ({ children }) => {
   const [missions, setMissions] = useState<Mission[]>([]);
 
-  const createMission = (name: string, state: string) => {
-    const newMission: Mission = {
-      id: Date.now().toString(),
-      name,
-      state: state as 'pre-flight' | 'in-flight' | 'post-flight',
-    };
-    setMissions((prevMissions) => [...prevMissions, newMission]);
+  const getMissions = async () => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/missions`);
+      console.log(response)
+      const data = await response.json();
+      console.log(data)
+      setMissions(data);
+    } catch (error) {
+      console.error('Error fetching missions:', error);
+    }
   };
 
-  const moveMission = (id: string, newState: 'pre-flight' | 'in-flight' | 'post-flight') => {
-    setMissions((prevMissions) =>
-      prevMissions.map((mission) =>
-        mission.id === id ? { ...mission, state: newState } : mission
-      )
-    );
+
+  const createMission = async (name: string, state: string) => {
+    console.log(JSON.stringify({ name, state }))
+    try {
+      const response = await fetch(`${apiBaseUrl}/missions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, state }),
+      });
+      console.log(response)
+      const data = await response.json();
+      // Handle success or error
+    } catch (error) {
+      console.error('Error creating mission:', error);
+    }
   };
 
-  const deleteMission = (id: string) => {
-    setMissions((prevMissions) => prevMissions.filter((mission) => mission.id !== id));
+  const moveMission = async (id: string, newState: 'pre-flight' | 'in-flight' | 'post-flight') => {
+    console.log(newState)
+    try {
+      const response = await fetch(`${apiBaseUrl}/missions/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ new_state: newState }),
+      });
+      const data = await response.json();
+      // Handle success or error
+    } catch (error) {
+      console.error('Error moving mission:', error);
+    }
+  };
+
+  const deleteMission = async (id: string) => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/missions/${id}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      // Handle success or error
+    } catch (error) {
+      console.error('Error deleting mission:', error);
+    }
   };
 
   return (
-    <MissionContext.Provider value={{ missions, createMission, moveMission, deleteMission }}>
+    <MissionContext.Provider value={{ missions, createMission, moveMission, deleteMission, getMissions }}>
       {children}
     </MissionContext.Provider>
   );
