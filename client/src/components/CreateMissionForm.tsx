@@ -1,5 +1,5 @@
-// src/components/CreateMissionForm.tsx
 import React, { useState } from 'react';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { useMissionContext } from '../contexts/MissionContext';
 
 const CreateMissionForm: React.FC = () => {
@@ -16,24 +16,34 @@ const CreateMissionForm: React.FC = () => {
   };
 
   return (
-    <div>
+    <Container>
       <h2>Create Mission</h2>
-      <input
-        type="text"
-        placeholder="Mission Name"
-        value={newMissionName}
-        onChange={(e) => setNewMissionName(e.target.value)}
-      />
-      <label>
-        Select State:
-        <select defaultValue={selectedState} onChange={(e) => setSelectedState(e.target.value)}>
-          <option value="pre-flight">Pre-Flight</option>
-          <option value="in-flight">In-Flight</option>
-          <option value="post-flight">Post-Flight</option>
-        </select>
-      </label>
-      <button onClick={handleCreateMission}>Create</button>
-    </div>
+      <Form>
+        <Row className="mb-3">
+          <Col>
+            <Form.Control
+              type="text"
+              placeholder="Mission Name"
+              value={newMissionName}
+              onChange={(e) => setNewMissionName(e.target.value)}
+            />
+          </Col>
+          <Col>
+            <Form.Select
+              value={selectedState}
+              onChange={(e) => setSelectedState(e.target.value)}
+            >
+              <option value="pre-flight">Pre-Flight</option>
+              <option value="in-flight">In-Flight</option>
+              <option value="post-flight">Post-Flight</option>
+            </Form.Select>
+          </Col>
+          <Col>
+            <Button onClick={handleCreateMission}>Create</Button>
+          </Col>
+        </Row>
+      </Form>
+    </Container>
   );
 };
 

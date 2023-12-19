@@ -3,8 +3,8 @@ import React, { createContext, useState, useContext } from 'react';
 
 export const apiBaseUrl = 'http://localhost:9000';
 
-interface Mission {
-  id: string;
+export interface Mission {
+  id: number;
   name: string;
   state: 'pre-flight' | 'in-flight' | 'post-flight';
 }
@@ -13,7 +13,7 @@ interface MissionContextProps {
   missions: Mission[];
   createMission: (name: string, state: string) => void;
   moveMission: (id: string, newState: 'pre-flight' | 'in-flight' | 'post-flight') => void;
-  deleteMission: (id: string) => void;
+  deleteMission: (id: number) => void;
   getMissions: () => Promise<void>; 
 }
 
