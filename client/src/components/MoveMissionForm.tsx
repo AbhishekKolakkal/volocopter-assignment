@@ -3,17 +3,17 @@ import { Form, Button } from 'react-bootstrap';
 import { useMissionContext } from '../contexts/MissionContext';
 
 interface MoveMissionFormProps {
-  missionId: number; // Update to use the correct type for missionId
+  missionId: number;
 }
 
 const MoveMissionForm: React.FC<MoveMissionFormProps> = ({ missionId }) => {
   const [newState, setNewState] = useState('');
-  const { moveMission } = useMissionContext();
+  const { moveMission, missionStates } = useMissionContext();
 
   const handleMoveMission = () => {
-    if (['pre-flight', 'in-flight', 'post-flight'].includes(newState)) {
-      moveMission(missionId.toString(), newState as 'pre-flight' | 'in-flight' | 'post-flight');
-      setNewState(''); // Reset selected state after moving the mission
+    if (newState.trim() !== '') {
+      moveMission(missionId.toString(), newState);
+      setNewState('');
     }
   };
 
@@ -23,9 +23,11 @@ const MoveMissionForm: React.FC<MoveMissionFormProps> = ({ missionId }) => {
       <Form>
         <Form.Select value={newState} onChange={(e) => setNewState(e.target.value)}>
           <option value="">Select State</option>
-          <option value="pre-flight">Pre-Flight</option>
-          <option value="in-flight">In-Flight</option>
-          <option value="post-flight">Post-Flight</option>
+          {missionStates.map((state) => (
+            <option key={state.id} value={state.state_name}>
+              {state.display_name}
+            </option>
+          ))}
         </Form.Select>
         <Button onClick={handleMoveMission}>Move</Button>
       </Form>

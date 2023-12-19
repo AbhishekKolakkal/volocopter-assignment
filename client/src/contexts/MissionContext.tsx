@@ -1,42 +1,58 @@
-// src/contexts/MissionContext.tsx
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 export const apiBaseUrl = 'http://localhost:9000/api/v1';
 
 export interface Mission {
   id: number;
   name: string;
-  state: 'pre-flight' | 'in-flight' | 'post-flight';
+  state: string;
+}
+
+interface MissionState {
+  id: number;
+  display_name: string;
+  state_name: string;
 }
 
 interface MissionContextProps {
   missions: Mission[];
+  missionStates: MissionState[];
   createMission: (name: string, state: string) => void;
-  moveMission: (id: string, newState: 'pre-flight' | 'in-flight' | 'post-flight') => void;
+  moveMission: (id: string, newState: string) => void;
   deleteMission: (id: number) => void;
-  getMissions: () => Promise<void>; 
+  getMissions: () => Promise<void>;
+  getMissionStates: () => Promise<void>;
 }
 
 export const MissionContext = createContext<MissionContextProps | undefined>(undefined);
 
 export const MissionProvider: React.FC = ({ children }) => {
   const [missions, setMissions] = useState<Mission[]>([]);
+  const [missionStates, setMissionStates] = useState<MissionState[]>([]);
 
   const getMissions = async () => {
     try {
       const response = await fetch(`${apiBaseUrl}/missions`);
-      console.log(response)
       const data = await response.json();
-      console.log(data)
       setMissions(data);
     } catch (error) {
       console.error('Error fetching missions:', error);
     }
   };
 
+  const getMissionStates = async () => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/mission_state`);
+
+      const data = await response.json();
+      console.log(data)
+      setMissionStates(data);
+    } catch (error) {
+      console.error('Error fetching mission states:', error);
+    }
+  };
 
   const createMission = async (name: string, state: string) => {
-    console.log(JSON.stringify({ name, state }))
     try {
       const response = await fetch(`${apiBaseUrl}/missions`, {
         method: 'POST',
@@ -45,9 +61,6 @@ export const MissionProvider: React.FC = ({ children }) => {
         },
         body: JSON.stringify({ name, state }),
       });
-      console.log(response)
-      const data = await response.json();
-      // Handle success or error
     } catch (error) {
       console.error('Error creating mission:', error);
     } finally {
@@ -55,39 +68,37 @@ export const MissionProvider: React.FC = ({ children }) => {
     }
   };
 
-  const moveMission = async (id: string, newState: 'pre-flight' | 'in-flight' | 'post-flight') => {
-    console.log(newState)
+  const moveMission = async (id: string, newState: string) => {
     try {
       const response = await fetch(`${apiBaseUrl}/missions/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({new_state: newState}),
+        body: JSON.stringify({ new_state: newState }),
       });
-      const data = await response.json();
     } catch (error) {
       console.error('Error moving mission:', error);
     } finally {
-      getMissions()
+      getMissions();
     }
   };
 
-  const deleteMission = async (id: string) => {
+  const deleteMission = async (id: number) => {
     try {
       const response = await fetch(`${apiBaseUrl}/missions/${id}`, {
         method: 'DELETE',
       });
-      const data = await response.json();
     } catch (error) {
       console.error('Error deleting mission:', error);
     } finally {
-      getMissions()
+      getMissions();
     }
   };
 
+
   return (
-    <MissionContext.Provider value={{ missions, createMission, moveMission, deleteMission, getMissions }}>
+    <MissionContext.Provider value={{ missions, missionStates, createMission, moveMission, deleteMission, getMissions, getMissionStates }}>
       {children}
     </MissionContext.Provider>
   );

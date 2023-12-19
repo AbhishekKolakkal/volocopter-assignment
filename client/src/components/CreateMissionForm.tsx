@@ -4,14 +4,14 @@ import { useMissionContext } from '../contexts/MissionContext';
 
 const CreateMissionForm: React.FC = () => {
   const [newMissionName, setNewMissionName] = useState('');
-  const [selectedState, setSelectedState] = useState('pre-flight');
-  const { createMission } = useMissionContext();
+  const [selectedState, setSelectedState] = useState('');
+  const { createMission, missionStates } = useMissionContext();
 
   const handleCreateMission = () => {
-    if (newMissionName.trim() !== '') {
+    if (newMissionName.trim() !== '' && selectedState.trim() !== '') {
       createMission(newMissionName, selectedState);
       setNewMissionName('');
-      setSelectedState('pre-flight'); // Reset selected state after creating a mission
+      setSelectedState('');
     }
   };
 
@@ -33,9 +33,12 @@ const CreateMissionForm: React.FC = () => {
               value={selectedState}
               onChange={(e) => setSelectedState(e.target.value)}
             >
-              <option value="pre-flight">Pre-Flight</option>
-              <option value="in-flight">In-Flight</option>
-              <option value="post-flight">Post-Flight</option>
+              <option value="">Select State</option>
+              {missionStates.map((state) => (
+                <option key={state.id} value={state.state_name}>
+                  {state.display_name}
+                </option>
+              ))}
             </Form.Select>
           </Col>
           <Col>

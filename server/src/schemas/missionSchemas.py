@@ -18,3 +18,16 @@ class Mission(MissionBase):
 class MissionMove(BaseModel):
     new_state: str
 
+
+class MissionStateBase(BaseModel):
+    state_name: str
+    display_name: str
+
+class MissionState(MissionStateBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+class MissionStateCreate(MissionStateBase):
+    pass

@@ -8,3 +8,12 @@ class Missions(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     state = Column(String)
+
+class Mission_State(Base):
+    __tablename__ = "mission_state"
+
+    id = Column(Integer, primary_key=True, index=True)
+    state_name = Column(String)
+    display_name = Column(String)
+
+    
