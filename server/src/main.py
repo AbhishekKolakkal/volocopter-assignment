@@ -23,7 +23,7 @@ def get_db():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Update with your React app URL
+    allow_origins=["*"],  # Update with your React app URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

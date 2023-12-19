@@ -7,7 +7,7 @@ services:
         volumes:
             - ./server/src:/server/src
         ports:
-            - 9000
+            - 9000:9000
         networks:
             - back-tier
 
@@ -17,7 +17,7 @@ services:
             - ./client/src:/client/src
             - ./client/vite.config.ts:/client/vite.config.ts
         ports:
-            - 3000
+            - 3000:3000
         networks:
             - back-tier
         links:
