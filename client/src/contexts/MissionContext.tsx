@@ -1,7 +1,7 @@
 // src/contexts/MissionContext.tsx
 import React, { createContext, useState, useContext } from 'react';
 
-export const apiBaseUrl = 'http://localhost:9000';
+export const apiBaseUrl = 'http://localhost:9000/api/v1';
 
 export interface Mission {
   id: number;
@@ -63,7 +63,7 @@ export const MissionProvider: React.FC = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newState),
+        body: JSON.stringify({new_state: newState}),
       });
       const data = await response.json();
     } catch (error) {
