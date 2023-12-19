@@ -50,6 +50,8 @@ export const MissionProvider: React.FC = ({ children }) => {
       // Handle success or error
     } catch (error) {
       console.error('Error creating mission:', error);
+    } finally {
+      getMissions();
     }
   };
 
@@ -64,9 +66,10 @@ export const MissionProvider: React.FC = ({ children }) => {
         body: JSON.stringify(newState),
       });
       const data = await response.json();
-      // Handle success or error
     } catch (error) {
       console.error('Error moving mission:', error);
+    } finally {
+      getMissions()
     }
   };
 
@@ -76,9 +79,10 @@ export const MissionProvider: React.FC = ({ children }) => {
         method: 'DELETE',
       });
       const data = await response.json();
-      // Handle success or error
     } catch (error) {
       console.error('Error deleting mission:', error);
+    } finally {
+      getMissions()
     }
   };
 
