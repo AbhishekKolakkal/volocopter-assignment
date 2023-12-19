@@ -14,7 +14,7 @@ const MissionBoard: React.FC = () => {
     const filteredMissions = missions.filter((mission) => mission.state === state);
     return (
       <Col>
-        <h2>{state.replace('-', ' ').toUpperCase()}</h2>
+        <h2>{state.replace('-', ' ').toUpperCase()} ({filteredMissions.length})</h2>
         {filteredMissions.map((mission) => (
           <MissionCard key={mission.id} mission={mission} />
         ))}
