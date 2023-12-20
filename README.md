@@ -75,7 +75,7 @@ All features mentioned in the PDF is added with the UI/UX also. Just that the Co
 ### About Database
 
 - We are using SQLite3 as database.
-- A file named flights.db will be stores in the server directory
+- A file named flights.db will be stores in the server/src directory
 - We have 2 table
     1. missions
     2. mission_state
