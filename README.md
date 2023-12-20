@@ -1,88 +1,95 @@
-# Volocopter Code Challenge
+### Brief Description About the App
+The App is made with following Tech Stack
+1. Front-end -> React With TypeScript
+2. Back-end -> FastAPI (Python)
+3. Database -> SQLite3
+4. Back-end Testing -> Pytest
+5. Containerization -> Docker
 
-Our intent with this repo is to save you time when doing our code challenge. Here, you'll find a complete setup with front end and back end.
+### Installation
 
-## IMPORTANT
+Clone the repository.
 
-1. Usage of this repository's code is **not** at all mandatory for the completion of our code challenge.
-2. **If you decide to use this repo** for your code challenge's response, feel free to change **anything** you want in it. Make it your own!
+**Please Note:** The whole App runs on ==docker compose==, so you will need to install it manually first 
 
-## Run the app locally
+Once docker compose is installed, use these commands to run the client as well as the server
 
-### Pre-requisites
+`docker compose build`
 
-In order to run this repo locally, you will need to have the following dependencies installed:
+`docker compose up` or `docker compose up -d` to run in detached mode
 
-- Docker
-- Python (v3.12)
-- Node
+Now in your browser you can go to `http://localhost:3000` which will render the front-end. 
+you can also paste this url to see even the back-end is running `http://localhost:9000/api/v1`. Once you pasted this url you should see a json like this 
+```
+{
+"detail": "App is running"
+}
+```
+which means the back-end is also running.
 
-### Setup
+### Functionalities of back-end done by FastAPI
 
-First, make sure that the port for the `proxy` service (port `8080`) is free in case you already have other Docker containers running. You can also update it in [`docker-compose.yml`](./docker-compose.yml), if you prefer.
+- As I have used FastAPI to build this app, the documentation of the API is also available by going to this url `http://localhost:9000/docs`. This will render all the API endpoints the App is using.
+- As you can see from visiting this url we actually have 2 main endpoints 
+    1. `api/v1/missions` (CRUD Operation)
+    2. `api/v1/mission_state` (CRD Operation)
+- In this app as to show the ==scalable functionality== I also made another endpoint called mission_state. **(Not integrated with the front-end and)** It can only be accessed using `http://localhost:9000/docs` or hitting the API Manually
 
-Once the app is running, you should see it in [`http://localhost:8080`](http://localhost:8080).
+**Endpoint: "/api/v1/mission_state"** can be used to create New Mission State or even the Old mission State. As soon as new Mission State is saved in the DB, it will reflect as a column in the front-end. For Example: Right now the app contains 3 state 1. Pre Flight 2. In Flight 3. Post Flight. But using this API we can add another column of Mission State and it will reflect on the Front-end
 
-In order to run the repo there are a few options:
+**Important Note: If the pre-flight, in-flight and post-flight is not visible then please use this API to create these. Writing the values over here, so that you can easily create.**
 
-#### Open a terminal at the root directory of the repo and execute
+> For pre-flight: Use the api/v1/mission_state API in the docs with these values. Please click on Try it Out button to use the values
+```
+{
+  "state_name": "pre-flight",
+  "display_name": "Pre Flight"
+}
+```
 
-        ./go run
+> For in-flight: Use the api/v1/mission_state API in the docs with these values. Please click on Try it Out button to use the values
+```
+{
+  "state_name": "in-flight",
+  "display_name": "In Flight"
+}
+```
 
-\* Our 'go' file is just a zsh script which runs `docker compose`.
+> For post-flight: Use the api/v1/mission_state API in the docs with these values. Please click on Try it Out button to use the values
+```
+{
+  "state_name": "post-flight",
+  "display_name": "Post Flight"
+}
+```
 
-alternatively, you can directly use:
+### Functionalities of Front-end done by React
 
-        docker compose up -d
+All features mentioned in the PDF is added with the UI/UX also. Just that the Color choices you may not like :P
 
-#### Run server and client separately
-
-- Server
-
-    In the terminal, navigate to the `/server` directory, and run:
-
-          uvicorn src.main:app --host YOUR_HOST --port YOUR_PORT --reload
-
-- Client
-
-    In the terminal, navigate to the `/client` directory, and run:
-
-          yarn dev
-
-#### Last considerations
-
-We recommend using a Python virtual environment and using VSCode as your IDE for a better development experience.
-
-### UI Designs
-
-For convenience, the designs from the challenge are also here in this repo, at the [`ui-designs`](./ui-designs/) folder.
-
-
-### Thinking Out Loud
-
-* I need to be able to control and oversee the status of all missions on a given day.
-
-
-The user expects to be able to:
-1. View all the Flight Missions in each state on the same page
-The states are: Pre-Flight, In-Flight, and Post-Flight.
-2. Insert Flight Missions on the board;
-3. Move the Flight Missions from one state to the next;
-4. Delete Flight Missions;
-
-**This totally means they wanted a JIRA Kanban Board like thing that can move the flight mission, Insert flight Mission, and Delete Flight Mission**
-
-
-**I can pretty much use a NOSQL DB for now that there is not much of thing is to be done but will make pros and cons of database once I come up with the whole class diagram**
+- Features such Add Mission, Move Mission and Delete Mission is added
+- For Flash message we have used react-tostify
+- Also we have used react-bootstrap for css and modal and buttons
 
 
-**I would be focussing on these points**
-• Creating clean, readable and extensible code - This can be achieved by showing we can add ore feature
-• Testing your code properly - Using test cases
-• Using Git with proper commits
+### About Database
 
-**Please make sure that testing is very important thing to be done**
+- We are using SQLite3 as database.
+- A file named flights.db will be stores in the server directory
+- We have 2 table
+    1. missions
+    2. mission_state
 
+### About Testing
+- There is a small testing file in the `server/src/` directory called main `test_main.py` 
+- This python file has small testing snippets for missions api which covers the testing of GET,POST,PUT,DELETE.
 
+To run the pytest you will need to exec inside the server docker container
 
-uvicorn src.main:app --host 0.0.0.0 --port 9000 --reload
+`docker ps`
+
+use the server container name and use `docker exec {server_container_name} -it /bin/bash`
+
+after this run
+
+`pytest server/src test_main.py`

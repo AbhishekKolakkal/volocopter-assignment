@@ -19,6 +19,12 @@ app.add_middleware(
 )
 
 # Include the mission router
+
+@app.get("/api/v1")
+def health_check():
+    return {"detail": "App is running"}
+
+
 app.include_router(mission.router, prefix="/api/v1")
 
 
