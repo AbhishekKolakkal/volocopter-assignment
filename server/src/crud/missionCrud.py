@@ -6,8 +6,8 @@ from models.missionModels import Missions, Mission_State
 def get_missions(db: Session):
     return db.query(Missions).all()
 
-def create_mission(db: Session, name: str, state: str):
-    mission = Missions(name=name, state=state)
+def create_mission(db: Session, name: str, description: str, state: str):
+    mission = Missions(name=name, description=description, state=state)
     db.add(mission)
     db.commit()
     db.refresh(mission)

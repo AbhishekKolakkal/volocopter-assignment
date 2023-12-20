@@ -7,6 +7,7 @@ class Missions(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+    description = Column(String)
     state = Column(String)
 
 class Mission_State(Base):

@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 class MissionBase(BaseModel):
     name: str
+    description: str
     state: str
 
 class MissionCreate(MissionBase):
