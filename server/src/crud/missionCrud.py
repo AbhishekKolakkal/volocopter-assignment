@@ -1,7 +1,7 @@
 # crud.py
 from os import name
 from sqlalchemy.orm import Session
-from models.missionModels import Missions, Mission_State
+from ..models.missionModels import Missions, Mission_State
 
 def get_missions(db: Session):
     return db.query(Missions).all()

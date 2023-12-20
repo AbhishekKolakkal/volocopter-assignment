@@ -1,8 +1,8 @@
 # main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import mission, mission_state  # Import the mission router
-from database import create_tables
+from .routers import mission, mission_state  # Import the mission router
+from .database import create_tables
 
 
 app = FastAPI()

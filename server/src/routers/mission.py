@@ -1,9 +1,9 @@
 # routers/mission.py
 from fastapi import APIRouter, HTTPException, Depends, Body
 from sqlalchemy.orm import Session
-from database import get_db
-from schemas import missionSchemas
-from crud import missionCrud
+from ..database import get_db
+from ..schemas import missionSchemas
+from ..crud import missionCrud
 
 router = APIRouter()
 
