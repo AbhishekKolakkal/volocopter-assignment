@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export const apiBaseUrl = 'http://localhost:9000/api/v1';
 
@@ -6,6 +7,7 @@ export interface Mission {
   id: number;
   name: string;
   state: string;
+  description: string
 }
 
 interface MissionState {
@@ -17,7 +19,7 @@ interface MissionState {
 interface MissionContextProps {
   missions: Mission[];
   missionStates: MissionState[];
-  createMission: (name: string, state: string) => void;
+  createMission: (name: string, description: string) => void;
   moveMission: (id: string, newState: string) => void;
   deleteMission: (id: number) => void;
   getMissions: () => Promise<void>;
@@ -52,17 +54,21 @@ export const MissionProvider: React.FC = ({ children }) => {
     }
   };
 
-  const createMission = async (name: string, state: string) => {
+  const createMission = async (name: string, description: string, state: string = "pre-flight") => {
     try {
       const response = await fetch(`${apiBaseUrl}/missions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, state }),
+        body: JSON.stringify({ name, description, state }),
       });
+      if (response.status == 200) {
+        toast.success('Mission created successfully');
+      }
     } catch (error) {
       console.error('Error creating mission:', error);
+      toast.error('Failed to create mission. Please try again.');
     } finally {
       getMissions();
     }
@@ -77,8 +83,13 @@ export const MissionProvider: React.FC = ({ children }) => {
         },
         body: JSON.stringify({ new_state: newState }),
       });
+
+      if (response.status == 200) {
+        toast.success('Mission moved successfully');
+      }
     } catch (error) {
       console.error('Error moving mission:', error);
+      toast.error('Failed to move mission. Please try again.');
     } finally {
       getMissions();
     }
@@ -89,8 +100,12 @@ export const MissionProvider: React.FC = ({ children }) => {
       const response = await fetch(`${apiBaseUrl}/missions/${id}`, {
         method: 'DELETE',
       });
+      if (response.status == 200) {
+        toast.success('Mission deleted successfully');
+      }
     } catch (error) {
       console.error('Error deleting mission:', error);
+      toast.error('Failed to delete mission. Please try again.');
     } finally {
       getMissions();
     }

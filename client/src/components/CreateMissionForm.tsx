@@ -1,52 +1,66 @@
+// components/CreateMissionForm.tsx
 import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { Modal, Form, Button } from 'react-bootstrap';
 import { useMissionContext } from '../contexts/MissionContext';
 
-const CreateMissionForm: React.FC = () => {
+interface CreateMissionFormProps {
+  show: boolean;
+  onClose: () => void;
+}
+
+const CreateMissionForm: React.FC<CreateMissionFormProps> = ({ show, onClose }) => {
   const [newMissionName, setNewMissionName] = useState('');
-  const [selectedState, setSelectedState] = useState('');
-  const { createMission, missionStates } = useMissionContext();
+  const [newMissionDescription, setNewMissionDescription] = useState('');
+  const [selectedState] = useState('');
+  const { createMission } = useMissionContext();
 
   const handleCreateMission = () => {
-    if (newMissionName.trim() !== '' && selectedState.trim() !== '') {
-      createMission(newMissionName, selectedState);
+    if (newMissionName.trim() !== '') {
+      // Pass mission name, description, and state to createMission
+      createMission(newMissionName, newMissionDescription);
       setNewMissionName('');
-      setSelectedState('');
+      setNewMissionDescription('');
+      onClose(); // Close the modal after creating the mission
     }
   };
 
   return (
-    <Container>
-      <h2>Create Mission</h2>
-      <Form>
-        <Row className="mb-3">
-          <Col>
+    <Modal show={show} onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Create Mission</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Form.Group className="mb-3" controlId="formMissionName">
+            <Form.Label>Mission Name</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Mission Name"
+              placeholder="Enter mission name"
               value={newMissionName}
               onChange={(e) => setNewMissionName(e.target.value)}
             />
-          </Col>
-          <Col>
-            <Form.Select
-              value={selectedState}
-              onChange={(e) => setSelectedState(e.target.value)}
-            >
-              <option value="">Select State</option>
-              {missionStates.map((state) => (
-                <option key={state.id} value={state.state_name}>
-                  {state.display_name}
-                </option>
-              ))}
-            </Form.Select>
-          </Col>
-          <Col>
-            <Button onClick={handleCreateMission}>Create</Button>
-          </Col>
-        </Row>
-      </Form>
-    </Container>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formMissionDescription">
+            <Form.Label>Mission Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              placeholder="Enter mission description"
+              value={newMissionDescription}
+              onChange={(e) => setNewMissionDescription(e.target.value)}
+            />
+          </Form.Group>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Close
+        </Button>
+        <Button variant="primary" onClick={handleCreateMission}>
+          Create
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

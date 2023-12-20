@@ -14,8 +14,6 @@ const App: React.FC = () => {
         <Container>
           <Row className="mt-4 mb-4">
             <Col>
-              {/* CreateMissionForm component */}
-              <CreateMissionForm />
             </Col>
           </Row>
           <Row>

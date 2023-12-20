@@ -21,12 +21,25 @@ const MissionCard: React.FC<MissionCardProps> = ({ mission }) => {
     // Once deleted, close the modal
     setShowModal(false);
   };
+  
+  const getBorderStyle = () => {
+    switch (mission.state.toLowerCase()) {
+      case 'pre-flight':
+        return '10px solid yellow';
+      case 'in-flight':
+        return '10px solid blue';
+      case 'post-flight':
+        return '10px solid green';
+      default:
+        return '10px solid black'; // Default border style
+    }
+  };
 
   return (
-    <Card className="mb-3">
+    <Card className="mb-3" style={{ borderRadius: '3%', borderLeft: getBorderStyle() }}>
       <Card.Body>
         <Card.Title>{mission.name}</Card.Title>
-        <Card.Text>{mission.state}</Card.Text>
+        <Card.Text>{mission.description}</Card.Text>
         <Button onClick={toggleForm} className="me-2">
           Move Mission
         </Button>
